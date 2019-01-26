@@ -1,13 +1,14 @@
 #!/usr/bin/env python3
-#import cgitb
+# '''
+# API для управления иерархическим списком, база данных - SQLite
+# '''
+
 import sqlite3 as sq
 import os
 import json
 import sys
 import re
-#print("Content-type: text/html\n")
 print("Content-type: application/json\n\n")
-#con = sq.connect('test.db')#попробовал добавить путь до базы в cgi-bin
 if os.environ['REQUEST_METHOD'] == 'GET':
     id = re.findall('(\d+)', os.getenv('QUERY_STRING'))[0]
     con = sq.connect('test.db')
@@ -29,7 +30,7 @@ elif os.environ['REQUEST_METHOD'] == 'POST':
             cur.execute('INSERT INTO NODES(LABEL, PARENT) VALUES(?,?)', (data['label'], int(data['parent'])))
             con.commit()
             print(json.dumps({'code': 'OK'}))
-        except:#нехорошо,но я пока не придумал как сделать
+        except:  # нехорошо,но я пока не придумал как сделать
             print(json.dumps({'code': 'Already exist'}))
 elif os.environ['REQUEST_METHOD'] == 'PUT':
     dat = sys.stdin.read(int(os.environ.get('CONTENT_LENGTH', 0)))
