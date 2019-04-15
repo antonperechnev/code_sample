@@ -8,6 +8,8 @@ from flasgger import Swagger
 from flasgger.utils import swag_from
 import psycopg2
 from datetime import datetime, timezone
+
+
 app = Flask(__name__)
 Swagger(app)
 
@@ -51,7 +53,7 @@ def stats_return():
 
             """
     try:
-        conn = psycopg2.connect(dbname='api_test', user='postgres', password='Anton1995', host='127.0.0.1')
+        conn = psycopg2.connect(dbname='db_name', user='user', password='password', host='127.0.0.1'1')
         cur = conn.cursor()
 
         sorted_by = ['1y', '1m', '1w', 'star', 'forks', 'all']
@@ -126,7 +128,7 @@ def stat_return():
     day = int(datetime.now(tz=timezone.utc).strftime('%d/%m/%Y').split('/')[0])
     timestamp_now = datetime.timestamp(datetime(year, month, day, tzinfo=timezone.utc))
 
-    conn = psycopg2.connect(dbname='api_test', user='postgres', password='Anton1995', host='127.0.0.1')
+    conn = psycopg2.connect(dbname='db_name', user='user', password='password', host='127.0.0.1')
     cur = conn.cursor()
 
     ping = None
