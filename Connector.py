@@ -55,8 +55,8 @@ class Binance(AllExchange):
 
     @staticmethod
     def data_encrypter():
-        api = b'rdydTXwFlP4PISVAZnottruetU7qH8qj0UO9aG6hVZacxNGntlzl3ECPBpUivZ'
-        secret = b'iDCP4Mm92un9as8nottrueqV2I6pSFKVqtW2gQJMor20fmVdIoKufSKaU4Y2wwfkG'
+        api = b'rdydTXwFlP4PISVAZnottruet0UO9aG6hVZacxNGntlzl3ECPBpUivZ'
+        secret = b'iDCP4Mm92un9as8nottrueqVqtW2gQJMor20fmVdIoKufSKaU4Y2wwfkG'
         return {'api_key': api,
                 'secret': secret}
 
