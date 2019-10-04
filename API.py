@@ -271,7 +271,7 @@ if __name__ == '__main__':
 
 '''
 {"id": "1",
-"channels": {"1": "antonperechnev", "0": "anton.perechnev@gmail.com"},
+"channels": {"1": "", "0": ""},
 "service":1,
 "condition": {"value": 50},
 "subscription_name": "test"}
