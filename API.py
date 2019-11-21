@@ -38,7 +38,7 @@ SERVICES = {1: 'github', 2: 'screener', 3: 'community'}
 
 
 def return_id_insert(user_hash, condition, service):
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute('insert into subscription(sub_hash, condition, service) values (%s, %s, %s)'
                         'on conflict(sub_hash) do update set upserted = TRUE returning id ;',
@@ -48,7 +48,7 @@ def return_id_insert(user_hash, condition, service):
 
 
 def insert_in_users(user_id):
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute('insert into users values (%s) on conflict do nothing;', (user_id,))
     return 1
@@ -56,7 +56,7 @@ def insert_in_users(user_id):
 
 def in_contact_del_sub(user_id: str, channels: dict, subscription_id: int):
     ids = []
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             channel_to_delete = tuple(channels.keys())
             # TODO check this
@@ -81,7 +81,7 @@ def in_contact_del_sub(user_id: str, channels: dict, subscription_id: int):
 
 def insert_in_each_sub(subscription_id, user_id, subscription_name, contact_ids: list, disposable):
     ids = []
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             for c_id in contact_ids:
                 cur.execute('insert into each_sub(contact_id, user_id, sub_id, user_sub_name, disposable) '
@@ -92,8 +92,8 @@ def insert_in_each_sub(subscription_id, user_id, subscription_name, contact_ids:
 
 
 def insert_in_expire(each_sub_ids: list):
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
-        with conn.cursor(cursor_factory=DictCursor) as cur:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
+        with conn.cursor(cursor_factory=RealDictCursor) as cur:
             for ids in each_sub_ids:
                 cur.execute(f'insert into expire(each_sub_id, last_select) values (%s) returning id;', (ids, 0))
                 ids = cur.fetchone()['id']
@@ -175,7 +175,7 @@ def method_2():
     """
     table_name = request.args.get('table') or 'channel'
     key = request.args.get('key')
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             cur.execute(f'select * from {table_name}')
             data = cur.fetchall()
@@ -217,7 +217,7 @@ def method_3():
         """
     # TODO need add validation and exception
     user_id = request.args.get('user id')
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             sql = '''
                 select each_sub.id as subscription_id, each_sub.user_sub_name, s.service, s.condition, c.data from each_sub
@@ -258,7 +258,7 @@ def method_4():
     data = request.get_json()
     user_id = data['user_id']
     sub_id = data['subscription_id']
-    with psycopg2.connect(dbname='allerts', user='postgres', password='Anton1995', host='127.0.0.1') as conn:
+    with psycopg2.connect(dbname='', user='', password='', host='127.0.0.1') as conn:
         with conn.cursor(cursor_factory=RealDictCursor) as cur:
             for s_id in sub_id:
                 cur.execute('delete from each_sub where id = %s and user_id like %s', (s_id, user_id))
