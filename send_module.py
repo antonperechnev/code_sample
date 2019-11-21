@@ -18,7 +18,7 @@ import os
 
 vyselect = {1: sys.maxsize}
 
-engine = create_engine('postgresql://postgres:Anton1995@localhost/allerts',
+engine = create_engine('engine',
                        poolclass=NullPool)
 
 config = configparser.ConfigParser()
@@ -30,9 +30,7 @@ logging.basicConfig(format='%(threadName)s - %(name)s - %(asctime)s - %(message)
                     level=logging.INFO, filename=f'../logs/{file}.log')
 logger = logging.getLogger(file)
 
-# TODO open session in each method separate?
 Session = sessionmaker(engine)
-# session = Session()
 
 
 class DBHandler:
@@ -49,13 +47,11 @@ class DBHandler:
                     Contacts.ch_id == self.ch_id,
                     EachSub.disposable == disposable) \
             .join(EachSub.expire) \
-            .join(EachSub.contacts)# .distinct(Contacts.data).order_by(desc(Contacts.data),
-                                                                   #  desc(Expire.last_select))
+            .join(EachSub.contacts)
 
         contacts = [c[0] for c in query.values(Contacts.data)]
         each_sub_id = [ids[0] for ids in query.values(EachSub.id)]
         sub_names = [name[0] for name in query.values(EachSub.user_sub_name)]
-        # ch_ids = [ids[0] for ids in query.values(Contacts.ch_id)]
         contacts_id = {'contacts': contacts, 'ids': each_sub_id, 'sub_names': sub_names}
         session.close()
         return contacts_id
@@ -129,7 +125,6 @@ class Alert:
     def __init__(self, subscription_id, message):
         self.sub_id = subscription_id
         self.message = message
-        # self.bfg = bfg_message
 
     def send(self, delay=0, screener: bool = False):
         session = Session()
@@ -156,7 +151,6 @@ class Alert:
                     message = [self.message['regular'].substitute(user_sub_name=sub) for sub in
                                user_sub_names]
 
-                # TODO maybe problems here
                 if delay and contacts:
                     self.delay_send(message=message, session=session,
                                     contacts=contacts, ch_id=ch_id)
@@ -172,21 +166,11 @@ class Alert:
     @staticmethod
     def delay_send(message, session, contacts, ch_id):
         send_time = int(time.time()) + int(config['Message Delay']['delay'])
-        # TODO add in contacts json.dumps()
         row = DelayMessages(contacts=contacts, send_time=send_time,
                             message=json.dumps(message), ch_id=ch_id)
         session.add(row)
-
+        session.commit()
+        
 
 if __name__ == '__main__':
-    # al = Alert(16, '1')
-    # al.send()
-
-    db = DBHandler(16, 0)
-    print(db.create_contacts(0))
-    # print(db.update_expire(0, [5]))
-    '''
-    s = AlertHandler('0', 0, ['antonperechnev'])
-    print()
-    print(s.send_alert())
-    '''
+    pass
